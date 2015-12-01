@@ -1,0 +1,2 @@
+Pre-compiled binaries for windows can be found here:
+https://indy.fulgan.com/SSL/

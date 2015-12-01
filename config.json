@@ -1,0 +1,23 @@
+{
+  "port": 9000,
+  "enableDirectoryListing": true,
+  "resources": [
+    {
+      "url": "movies",
+      "dir": "D:/path/to/directory",
+      "glob": "**/*.mkv"
+    },
+    {
+      "url": "series",
+      "dir": "E:/path/to/different/directory",
+      "glob": "**/*.mkv"
+    }
+  ],
+  "key": "key.pem",
+  "cert": "cert.pem",
+  "users": "users.json",
+  "auth": {
+    "qop": "auth",
+    "realm": "tzatziki"
+  }
+}

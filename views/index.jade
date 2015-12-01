@@ -1,0 +1,21 @@
+html
+  head
+    title= title
+    style.
+      span {
+        margin: 0 5px;
+        color: gray;
+      }
+body
+  h1= title
+  ol
+    each link in links
+      li
+        if link.url
+          a(href=link.url) http
+          span |
+        if link.player
+          a(href=link.player) player
+          span |
+        if link.name
+          = link.name
