@@ -13,17 +13,20 @@ function startDetachedProcess(command, arguments) {
 }
 
 // parse input url
-var url = process.argv.slice(2)[0];
-var parsed = parse(url);
+if (process.argv.length < 3) {
+  console.log("URL argument missing");
+  process.exit(0);
+}
+var url = parse(process.argv[2]);
 
 // change protocol to https:
-parsed.set("protocol", config.protocol || "https:");
+url.set("protocol", config.protocol || "https:");
 
 // optionally write authentication into the url
 if (config.username && config.password) {
-  parsed.set("username", config.username);
-  parsed.set("password", config.password);
+  url.set("username", config.username);
+  url.set("password", config.password);
 }
 
 // start player
-startDetachedProcess(config.command, util.format(config.arguments || "%s", parsed.href));
+startDetachedProcess(config.command, util.format(config.arguments || "%s", url.href));
