@@ -24,8 +24,15 @@ console.log("User file loaded");
 var app = express();
 app.set("view engine", "jade");
 app.set("views", "./views");
+//app.use(morgan("combined", { stream: fs.createWriteStream("access.log", { flags: "a" }) }));
 app.use(morgan("combined"));
 app.use(helmet());
+var ONE_YEAR = 31536000000;
+app.use(helmet.hsts({
+  maxAge: ONE_YEAR,
+  includeSubdomains: true,
+  force: true
+}));
 app.use(compression());
 app.use(passport.initialize());
 app.use(passport.authenticate("digest", { session: false }));
@@ -113,15 +120,36 @@ config.resources.forEach(function (resource) {
   });
 });
 
-// load certificate
-var credentials = {
+// https server options
+var options = {
+  // load certificate
   key: fs.readFileSync(config.key),
-  cert: fs.readFileSync(config.cert)
+  cert: fs.readFileSync(config.cert),
+  // default node 0.12 ciphers with RC4 disabled
+  honorCipherOrder: true,
+  ciphers: [
+    "ECDHE-RSA-AES256-SHA384",
+    "DHE-RSA-AES256-SHA384",
+    "ECDHE-RSA-AES256-SHA256",
+    "DHE-RSA-AES256-SHA256",
+    "ECDHE-RSA-AES128-SHA256",
+    "DHE-RSA-AES128-SHA256",
+    "HIGH",
+    "!aNULL",
+    "!eNULL",
+    "!EXPORT",
+    "!DES",
+    "!RC4",
+    "!MD5",
+    "!PSK",
+    "!SRP",
+    "!CAMELLIA"
+  ].join(':')
 };
 console.log("Certificate loaded");
 
 // start the server
-var server = https.createServer(credentials, app);
+var server = https.createServer(options, app);
 server.listen(config.port, function () {
   var address = server.address();
   console.log("Listening on %s:%s", address.address, address.port);
